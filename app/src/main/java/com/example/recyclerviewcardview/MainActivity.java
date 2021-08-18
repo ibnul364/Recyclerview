@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.SearchView;
 
 
 import java.util.ArrayList;
@@ -105,5 +108,38 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Search Filter
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        //This is for get Menu
+        getMenuInflater().inflate(R.menu.mainmenu,menu);
+
+        //Now to Access the MenuItem
+        MenuItem item  = menu.findItem(R.id.search_menu);
+
+        //have to make SearchView, when we click on the search view it will visible the textfield for type search
+        SearchView searchView = (SearchView) item.getActionView();
+
+        //when you type any data in the textfield,as soon as event will be call up in backend
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                adapter.getFilter().filter(newText);
+
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
 }

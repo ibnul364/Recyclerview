@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,14 +15,18 @@ import com.example.recyclerviewcardview.Model;
 
 import java.util.ArrayList;
 
-public class myadapter  extends RecyclerView.Adapter<myviewholder>{
+public class myadapter  extends RecyclerView.Adapter<myviewholder> implements Filterable
+{
 
     ArrayList<Model> data;
+    //backup copy of  arraylist
+    ArrayList<Model> backup;
     Context context;
 
     public myadapter(ArrayList<Model> data,Context context) {
         this.data = data;
         this.context = context;
+        backup = new ArrayList<> (data);
     }
 
     @NonNull
@@ -62,4 +68,48 @@ public class myadapter  extends RecyclerView.Adapter<myviewholder>{
     public int getItemCount() {
         return data.size();
     }
+
+    @Override
+    public Filter getFilter() {
+
+
+
+        return filter;
+    }
+    //Make an Anonymous inner Class
+
+    Filter filter =  new Filter() {
+        @Override //background Thread
+        protected FilterResults performFiltering(CharSequence keyword) {
+
+            //Here we will pass a keyword, keyword will check it in the array then pass it in the temporary array
+            //now have to make a temporary array
+            ArrayList<Model> filteredData = new ArrayList<>();
+
+            if(keyword.toString().isEmpty()){
+                filteredData.addAll(backup);
+
+            }else{
+                    for (Model obj : backup){
+                        if(obj.getHeader().toString().toLowerCase().contains(keyword.toString().toLowerCase()))
+                            filteredData.add(obj);
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredData;
+            return results;
+
+
+        }
+
+        @Override //main UI Thread
+        protected void publishResults(CharSequence keyword, FilterResults results) {
+            data.clear();
+            data.addAll((ArrayList<Model>)results.values);
+            notifyDataSetChanged();
+        }
+    };
+
+
 }
