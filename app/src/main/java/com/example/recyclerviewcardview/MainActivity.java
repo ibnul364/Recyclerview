@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView1 = findViewById(R.id.recyclerView);
 //        recyclerView1.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new myadapter(dataQueue());
+        adapter = new myadapter(dataQueue(),getApplicationContext());
         recyclerView1.setAdapter(adapter);
 
         //This is for HorizontalLayout
